@@ -23,10 +23,25 @@ provider:
   #environment:
   #  SAMPLE_ENV_VAR: ${env:SAMPLE_ENV_VAR}
 
+
+
+iamRoleStatements:
+  - Effect: Allow
+    Action:
+        - dynamodb:Scan
+        - dynamodb:Query
+        - dynamodb:DescribeTable
+    Resource: 
+        - "arn:aws:dynamodb:us-east-1:*:*"
+
 functions:
-  hello:
-    handler: handler.hello
+  list:
+    handler: getProd.main
+    environment:
+        tableName: produtosDB
     events:
       - http:
-          path: hello
+          path: produtosDB
           method: get
+
+
