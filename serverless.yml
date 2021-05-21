@@ -12,7 +12,7 @@ plugins:
 
 provider:
   name: aws
-  runtime: nodejs10.x
+  runtime: nodejs14.x
   stage: dev
   region: us-east-1
   # To load environment variables externally
@@ -25,14 +25,32 @@ provider:
 
 
 
-iamRoleStatements:
-  - Effect: Allow
-    Action:
-        - dynamodb:Scan
-        - dynamodb:Query
-        - dynamodb:DescribeTable
-    Resource: 
-        - "arn:aws:dynamodb:us-east-1:*:*"
+  iamRoleStatements:
+      - Effect: Allow
+        Action:
+          - dynamodb:Scan
+          - dynamodb:Query
+          - dynamodb:GetItem
+          - dynamodb:PutItem
+          - dynamodb:UpdateItem
+          - dynamodb:DeleteItem
+          - dynamodb:DescribeTable
+        # Restrict our IAM role permissions to
+        # the specific table for the stage
+        Resource: 
+          - "arn:aws:dynamodb:us-east-1:*:*"
+
+  cors:
+    origin: '*'
+    headers:
+      - Content-Type
+      - X-Amz-Date
+      - Authorization
+      - X-Api-Key
+      - X-Amz-Security-Token
+      - X-Amz-User-Agent
+    allowCredentials: false
+
 
 functions:
   list:
@@ -43,5 +61,7 @@ functions:
       - http:
           path: produtosDB
           method: get
+          cors: true
+          authorizer: aws_iam
 
 

@@ -1,1 +1,7 @@
-{}
+{
+    "requestContext": {
+      "identity": {
+        "cognitoIdentityId": "user87"
+      }
+    }
+  }
