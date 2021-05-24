@@ -1,18 +1,17 @@
 import 'dotenv/config';
+import handler from './libs/handler-lib';
 
-const sesAccessKey = process.env.SES_ACCESS_KEY;
-const sesSecretKey = process.env.SES_SECRET_KEY;
 
-module.exports.handler = function(event, context, callback){
+export const main = handler((event, context, callback) => {
 
     const nodemailer = require('nodemailer');
     const smtpTransport = require('nodemailer-smtp-transport');
 
-    const transporter = nodemailer.createTransport( smtpTransport({
+    const transporter = nodemailer.createTransport(smtpTransport({
         service: 'gmail',
         auth: {
-            user: sesAccessKey,
-            pass: sesSecretKey
+            user: process.env.sesAccessKey,
+            pass: process.env.sesSecretKey,
         }
     }));
 
@@ -26,7 +25,7 @@ module.exports.handler = function(event, context, callback){
         text: text
     };
 
-    transporter.sendMail(mailOptions, (error, info) => {
+    return transporter.sendMail(mailOptions, (error, info) => {
         if(error){
             const response = {
                 statusCode: 500,
@@ -46,5 +45,6 @@ module.exports.handler = function(event, context, callback){
         };
         callback(null, response);
     });
-};
+});
+
 

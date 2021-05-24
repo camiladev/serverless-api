@@ -66,6 +66,15 @@ functions:
   
   sendMail:
     handler: sendMailReserv.handler
+    environment:
+        sesAccessKey: ${env:SES_ACCESS_KEY}
+        sesSecretKey: ${env:SES_SECRET_KEY}
+    events:
+      - http:
+          path: sendMail
+          method: post
+          cors: true
+          authorizer: aws_iam
     
 
   
@@ -73,3 +82,4 @@ functions:
 resources:
   # API Gateway Errors
   - ${file(resources/api-gateway-errors.yml)}
+
