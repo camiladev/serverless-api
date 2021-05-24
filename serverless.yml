@@ -63,8 +63,12 @@ functions:
           method: get
           cors: true
           authorizer: aws_iam
+  
+  sendMail:
+    handler: sendMailReserv.handler
+    
 
-
+  
 # Create our resources with separate CloudFormation templates
 resources:
   # API Gateway Errors
