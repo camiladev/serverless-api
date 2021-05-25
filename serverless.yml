@@ -65,7 +65,7 @@ functions:
           authorizer: aws_iam
   
   sendMail:
-    handler: sendMailReserv.handler
+    handler: sendMailReserv.main
     environment:
         sesAccessKey: ${env:SES_ACCESS_KEY}
         sesSecretKey: ${env:SES_SECRET_KEY}

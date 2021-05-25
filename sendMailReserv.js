@@ -1,50 +1,34 @@
 import 'dotenv/config';
 import handler from './libs/handler-lib';
 
+const nodemailer = require('nodemailer');
 
-export const main = handler((event, context, callback) => {
+const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+        user: process.env.sesAccessKey,
+        pass: process.env.sesSecretKey,
+    },
+    tls:{
+        rejectUnauthorized: false,
+    },
+});
 
-    const nodemailer = require('nodemailer');
-    const smtpTransport = require('nodemailer-smtp-transport');
-
-    const transporter = nodemailer.createTransport(smtpTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.sesAccessKey,
-            pass: process.env.sesSecretKey,
-        }
-    }));
-
-    const text = event.text;
+export const main = handler(async event => {
+    const data = JSON.parse(event.body);
 
     const mailOptions = {
-        from: "NPS <noreplay@nps.com.br>",
-        to: event.emailTo,
-        cc: 'camila.bittencourt@outlook.com',
-        subject: 'Reserva de mini minion',
-        text: text
+        from: "Camila Matos <cm285913@gmail.com>",
+        to: data.emailTo,
+        cc: data.emailCC,
+        subject: "Reserva de mini minion",
+        text: data.text
     };
 
-    return transporter.sendMail(mailOptions, (error, info) => {
-        if(error){
-            const response = {
-                statusCode: 500,
-                headers: { 'Access-Control-Allow-Origin': '*' },
-                body: JSON.stringify({
-                    error: error.message,
-                }),
-            };
-            callback(null, response);
-        }
-        const response = {
-                statusCode: 200,
-                headers: { 'Access-Control-Allow-Origin': '*' },
-                body: JSON.stringify({
-                    message: 'E-mail enviado com sucesso',
-                }),
-        };
-        callback(null, response);
-    });
+    const message = await transporter.sendMail(mailOptions);
+    return message;
 });
 
 
