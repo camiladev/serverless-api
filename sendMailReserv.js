@@ -22,7 +22,6 @@ export const main = handler(async event => {
     const mailOptions = {
         from: "Camila Matos <cm285913@gmail.com>",
         to: data.emailTo,
-        cc: data.emailCC,
         subject: "Reserva de mini minion",
         text: data.text
     };
